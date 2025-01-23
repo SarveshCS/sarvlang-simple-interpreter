@@ -1,0 +1,8 @@
+START
+    num lelo 'Enter a number: '
+    ye print karo 'You entered: {num} !'
+
+    //oye suno a = 5
+    //oye suno b = 5.6
+    //ye print karo 'sum: {a+2.6}'
+STOP
