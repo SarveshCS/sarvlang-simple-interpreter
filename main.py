@@ -307,34 +307,13 @@ def run_sarv(filename: str) -> bool:
             print('\n', end='')
             continue
 
-        ## INPUT
-        INPUT_COMMAND = 'lelo'
-        if INPUT_COMMAND in current_line:
-            variable_name_by_user, content_to_display = current_line.split(INPUT_COMMAND)
-            content_to_display = content_to_display.strip()
-            variable_name_by_user = variable_name_by_user.strip()
-            if content_to_display == '':
-                content_to_display = '\'\''
-            if (content_to_display[0] == "\'" and content_to_display[-1] != "\'") or (content_to_display[0] != "\'" and content_to_display[-1] == "\'"):
-                print(f'Error on line {line_count+1}: String not used correctly.')
-                return False
-            else:
-                if content_to_display[0] == "\'" and content_to_display[-1] == "\'":
-                    user_input = input(content_to_display[1:-1])
-                    user_input = evaluate_expression(user_input, _memory, line_count)
-                    if (res:=assignDataType(user_input)) is not False:
-                        _memory[variable_name] = res
-                    else:
-                        print(f'Error on line {line_count+1}: Unsupported result type.')
-                    _memory[variable_name_by_user] = user_input
-                    continue
-            continue
-
+        
         ## Variables
         INPUT_COMMAND = 'oye suno'
         if INPUT_COMMAND in current_line:
             _, command_ = current_line.split(INPUT_COMMAND)
             variable_name, variable_value = list(map(lambda x: x.strip(), command_.strip().split('=')))
+
             if variable_name == '' or variable_value == '':
                 print(f'Error on line {line_count+1}: \'=\' not use properly')
                 return False
@@ -342,6 +321,31 @@ def run_sarv(filename: str) -> bool:
             if len(variable_value)<2:
                 variable_value += ' '
             
+            # CONDITION TO DETECT INPUT COMMAND (temp)
+            if ((temp_cmd_lst := variable_value.partition(' '))[0].strip() == 'input'):
+                ## INPUT
+                variable_name_by_user, content_to_display = variable_name, temp_cmd_lst[-1].strip()
+                content_to_display = content_to_display.strip()
+                variable_name_by_user = variable_name_by_user.strip()
+                if content_to_display == '':
+                    content_to_display = '\'\''
+                if (content_to_display[0] == "\'" and content_to_display[-1] != "\'") or (content_to_display[0] != "\'" and content_to_display[-1] == "\'"):
+                    print(f'Error on line {line_count+1}: String not used correctly.')
+                    return False
+                else:
+                    if content_to_display[0] == "\'" and content_to_display[-1] == "\'":
+                        user_input = input(content_to_display[1:-1])
+                        user_input = evaluate_expression(user_input, _memory, line_count)
+                        if (res:=assignDataType(user_input)) is not False:
+                            _memory[variable_name_by_user] = res
+                        else:
+                            print(f'Error on line {line_count+1}: Unsupported result type.')
+                        _memory[variable_name_by_user] = user_input
+                        continue
+                continue
+
+                
+
             if (variable_value[0] == "\'" and variable_value[-1] != "\'") or (variable_value[0] != "\'" and variable_value[-1] == "\'"):
                 print(f'Error on line {line_count+1}: String not used correctly.')
                 return False
@@ -367,7 +371,6 @@ def run_sarv(filename: str) -> bool:
                     continue
                 else:
                     try:
-                        print(variable_value)
                         result = evaluate_expression(variable_value, _memory, line_count)
                         if (res:=assignDataType(result)) is not False:
                             _memory[variable_name] = res

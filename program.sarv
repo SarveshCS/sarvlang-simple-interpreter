@@ -1,8 +1,8 @@
 START
-    num lelo 'Enter a number: '
-    ye print karo 'You entered: {num} !'
-
-    //oye suno a = 5
-    //oye suno b = 5.6
-    //ye print karo 'sum: {a+2.6}'
+    //num1 lelo 'Enter first number: '
+    //num2 lelo 'Enter second number: '
+    oye suno num1 = input 'Enter first number: '
+    oye suno num2 = input 'Enter second number: '
+    oye suno sum = num1 + num2
+    ye print karo 'The number: {sum}'
 STOP
